@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Niche Tool Maintenance Scheduler - Data Analysis</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --text-color: #333;
+            --light-bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow-medium);
+            flex-grow: 1;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        .input-section, .results-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow-light);
+        }
+
+        textarea {
+            width: calc(100% - 20px);
+            min-height: 150px;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            resize: vertical;
+        }
+
+        input[type="file"] {
+            margin-bottom: 15px;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            width: calc(100% - 20px);
+            box-sizing: border-box;
+            background-color: var(--light-bg);
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .flex-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .flex-group label {
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: var(--shadow-light);
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+
+        tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        .chart-container {
+            margin-top: 20px;
+            text-align: center;
+            overflow-x: auto; /* Enable horizontal scrolling for narrow charts */
+        }
+
+        .chart-container svg {
+            background-color: #fdfdfd;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            max-width: 100%;
+            height: auto;
+            display: block; /* Remove extra space below SVG */
+            margin: 0 auto;
+        }
+
+        .chart-bar {
+            fill: var(--secondary-color);
+            transition: fill 0.3s ease;
+        }
+
+        .chart-bar:hover {
+            fill: var(--accent-color);
+        }
+
+        .chart-label {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 10px;
+            fill: var(--text-color);
+        }
+        
+        .chart-axis-label {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            fill: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .error-message {
+            color: var(--accent-color);
+            background-color: #ffe6e6;
+            border: 1px solid var(--accent-color);
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            display: none; /* Hidden by default */
+        }
+
+        footer {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+            color: #777;
+            font-size: 0.85em;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            border-radius: 0 0 8px 8px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            .flex-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            input[type="file"], textarea {
+                width: 100%;
+            }
+            button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            button:last-child {
+                margin-bottom: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI-Powered Niche Tool Maintenance Scheduler - Data Analysis</h1>
+        <p style="text-align: center; font-style: italic; color: #555;">
+            Analyze equipment usage and maintenance data to optimize scheduling.
+        </p>
+
+        <div class="input-section">
+            <h2>1. Input Your Data</h2>
+            <p>Paste your CSV data below or upload a CSV file.</p>
+            <textarea id="csvInput" placeholder="Paste your CSV data here. Example:
+EquipmentID,UsageHours,PredictedMaintenanceIntervalDays,EnvironmentalTemp
+EQ001,1200,90,25.5
+EQ002,850,120,24.1
+EQ003,1500,60,26.8
+EQ004,2000,45,27.0
+EQ005,700,150,23.9
+EQ006,1350,75,25.0
+EQ007,950,100,24.5"></textarea>
+            <div style="text-align: center; margin-bottom: 15px; font-weight: bold;">OR</div>
+            <input type="file" id="csvFile" accept=".csv">
+            <button id="processBtn">Analyze Data</button>
+            <div id="errorMessage" class="error-message"></div>
+        </div>
+
+        <div class="results-section" style="display: none;" id="resultsSection">
+            <h2>2. Analysis Results</h2>
+
+            <h3>Summary Statistics</h3>
+            <div id="statisticsOutput">
+                <!-- Statistics table will be inserted here -->
+            </div>
+
+            <div class="chart-options" style="margin-top: 30px;">
+                <label for="chartColumnSelect" style="font-weight: bold; margin-right: 10px;">Select Column for Chart:</label>
+                <select id="chartColumnSelect" style="padding: 8px; border-radius: 4px; border: 1px solid var(--border-color);"></select>
+            </div>
+
+            <!-- AD_SLOT -->
+            <h3>Visual Output</h3>
+            <div class="chart-container">
+                <svg id="dataChart" width="800" height="400" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet"></svg>
+            </div>
+
+            <h3 style="margin-top: 30px;">Download Results</h3>
+            <button id="downloadCsvBtn">Download Processed Data CSV</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 AI-Powered Niche Tool Maintenance Scheduler. All rights reserved.</p>
+        <!-- EU AI Act Disclosure: This tool provides data analysis functionality based on user-provided CSV data. It does not collect or process personal data, nor does it make automated decisions. Its purpose is to assist in understanding equipment maintenance patterns by visualizing and summarizing numerical inputs. Users are responsible for the data they upload and its compliance with relevant regulations. -->
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const csvInput = document.getElementById('csvInput');
+            const csvFile = document.getElementById('csvFile');
+            const processBtn = document.getElementById('processBtn');
+            const resultsSection = document.getElementById('resultsSection');
+            const statisticsOutput = document.getElementById('statisticsOutput');
+            const dataChart = document.getElementById('dataChart');
+            const chartColumnSelect = document.getElementById('chartColumnSelect');
+            const downloadCsvBtn = document.getElementById('downloadCsvBtn');
+            const errorMessageDiv = document.getElementById('errorMessage');
+
+            let parsedData = { headers: [], rows: [] };
+            let numericColumns = []; // Store names of numeric columns
+
+            // Function to display error message
+            function showError(message) {
+                errorMessageDiv.textContent = message;
+                errorMessageDiv.style.display = 'block';
+            }
+
+            // Function to hide error message
+            function hideError() {
+                errorMessageDiv.style.display = 'none';
+            }
+
+            // Simple CSV parser
+            function parseCSV(csvText) {
+                const lines = csvText.trim().split('\n');
+                if (lines.length === 0) {
+                    throw new Error("No data found in CSV.");
+                }
+
+                const headers = lines[0].split(',').map(h => h.trim());
+                const rows = [];
+
+                for (let i = 1; i < lines.length; i++) {
+                    const values = lines[i].split(',').map(v => v.trim());
+                    if (values.length !== headers.length) {
+                        console.warn(`Skipping row ${i + 1} due to column count mismatch.`);
+                        continue;
+                    }
+                    let rowObject = {};
+                    headers.forEach((header, index) => {
+                        rowObject[header] = values[index];
+                    });
+                    rows.push(rowObject);
+                }
+                return { headers, rows };
+            }
+
+            function isNumeric(value) {
+                return !isNaN(parseFloat(value)) && isFinite(value);
+            }
+
+            function calculateStats(data, column) {
+                const values = data.map(row => parseFloat(row[column])).filter(v => !isNaN(v));
+                if (values.length === 0) {
+                    return null;
+                }
+
+                const count = values.length;
+                const sum = values.reduce((a, b) => a + b, 0);
+                const mean = sum / count;
+                const min = Math.min(...values);
+                const max = Math.max(...values);
+
+                values.sort((a, b) => a - b);
+                let median;
+                if (count % 2 === 0) {
+                    median = (values[count / 2 - 1] + values[count / 2]) / 2;
+                } else {
+                    median = values[Math.floor(count / 2)];
+                }
+
+                return {
+                    count: count,
+                    min: min.toFixed(2),
+                    max: max.toFixed(2),
+                    mean: mean.toFixed(2),
+                    median: median.toFixed(2)
+                };
+            }
+
+            function renderStatistics(headers, rows) {
+                statisticsOutput.innerHTML = '';
+                numericColumns = [];
+
+                let statsTable = '<table><thead><tr><th>Column</th><th>Count</th><th>Min</th><th>Max</th><th>Mean</th><th>Median</th></tr></thead><tbody>';
+
+                headers.forEach(header => {
+                    const sampleValues = rows.map(row => row[header]).filter(v => v !== '').slice(0, 5); // Take first 5 non-empty values
+                    const allNumeric = sampleValues.every(isNumeric) && rows.every(row => isNumeric(row[header]) || row[header] === '');
+                    
+                    if (allNumeric) {
+                        numericColumns.push(header);
+                        const stats = calculateStats(rows, header);
+                        if (stats) {
+                            statsTable += `
+                                <tr>
+                                    <td>${header}</td>
+                                    <td>${stats.count}</td>
+                                    <td>${stats.min}</td>
+                                    <td>${stats.max}</td>
+                                    <td>${stats.mean}</td>
+                                    <td>${stats.median}</td>
+                                </tr>
+                            `;
+                        }
+                    }
+                });
+                statsTable += '</tbody></table>';
+                statisticsOutput.innerHTML = statsTable;
+
+                // Populate chart column selector
+                chartColumnSelect.innerHTML = '';
+                if (numericColumns.length === 0) {
+                    chartColumnSelect.innerHTML = '<option value="">No numeric columns found</option>';
+                    chartColumnSelect.disabled = true;
+                } else {
+                    chartColumnSelect.disabled = false;
+                    numericColumns.forEach(col => {
+                        const option = document.createElement('option');
+                        option.value = col;
+                        option.textContent = col;
+                        chartColumnSelect.appendChild(option);
+                    });
+                    // Trigger initial chart render
+                    if (chartColumnSelect.value) {
+                        renderChart(rows, chartColumnSelect.value);
+                    }
+                }
+            }
+
+            function renderChart(data, columnHeader) {
+                dataChart.innerHTML = ''; // Clear previous chart
+                if (!columnHeader || !data || data.length === 0) {
+                    dataChart.innerHTML = '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#777">No data or column selected for chart.</text>';
+                    return;
+                }
+
+                const values = data.map(row => parseFloat(row[columnHeader])).filter(v => !isNaN(v));
+                if (values.length === 0) {
+                    dataChart.innerHTML = '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#777">No numeric data in selected column.</text>';
+                    return;
+                }
+
+                const chartWidth = 800;
+                const chartHeight = 400;
+                const padding = 50;
+                const barPadding = 0.1; // percentage of bar width for padding
+
+                const chartInnerWidth = chartWidth - 2 * padding;
+                const chartInnerHeight = chartHeight - 2 * padding;
+
+                const maxValue = Math.max(...values);
+                const barWidth = chartInnerWidth / values.length;
+
+                // Y-axis
+                const yAxisGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                yAxisGroup.setAttribute('transform', `translate(${padding}, ${padding})`);
+                const yAxisLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                yAxisLine.setAttribute('x1', '0');
+                yAxisLine.setAttribute('y1', chartInnerHeight);
+                yAxisLine.setAttribute('x2', '0');
+                yAxisLine.setAttribute('y2', '0');
+                yAxisLine.setAttribute('stroke', '#ccc');
+                yAxisGroup.appendChild(yAxisLine);
+
+                const numTicks = 5;
+                for (let i = 0; i <= numTicks; i++) {
+                    const y = chartInnerHeight - (i / numTicks) * chartInnerHeight;
+                    const value = (i / numTicks) * maxValue;
+
+                    const tickLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    tickLine.setAttribute('x1', '-5');
+                    tickLine.setAttribute('y1', y);
+                    tickLine.setAttribute('x2', '0');
+                    tickLine.setAttribute('y2', y);
+                    tickLine.setAttribute('stroke', '#ccc');
+                    yAxisGroup.appendChild(tickLine);
+
+                    const tickLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    tickLabel.setAttribute('x', '-10');
+                    tickLabel.setAttribute('y', y + 3);
+                    tickLabel.setAttribute('text-anchor', 'end');
+                    tickLabel.setAttribute('class', 'chart-label');
+                    tickLabel.textContent = value.toFixed(0);
+                    yAxisGroup.appendChild(tickLabel);
+                }
+                dataChart.appendChild(yAxisGroup);
+
+                // X-axis
+                const xAxisGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                xAxisGroup.setAttribute('transform', `translate(${padding}, ${chartInnerHeight + padding})`);
+                const xAxisLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                xAxisLine.setAttribute('x1', '0');
+                xAxisLine.setAttribute('y1', '0');
+                xAxisLine.setAttribute('x2', chartInnerWidth);
+                xAxisLine.setAttribute('y2', '0');
+                xAxisLine.setAttribute('stroke', '#ccc');
+                xAxisGroup.appendChild(xAxisLine);
+                dataChart.appendChild(xAxisGroup);
+
+                // Bars
+                values.forEach((val, i) => {
+                    const barHeight = (val / maxValue) * chartInnerHeight;
+                    const x = padding + i * barWidth + (barWidth * barPadding / 2);
+                    const y = chartHeight - padding - barHeight;
+                    const currentBarWidth = barWidth * (1 - barPadding);
+
+                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', x);
+                    rect.setAttribute('y', y);
+                    rect.setAttribute('width', currentBarWidth);
+                    rect.setAttribute('height', barHeight);
+                    rect.setAttribute('class', 'chart-bar');
+                    dataChart.appendChild(rect);
+
+                    // X-axis label for each bar (index or simplified name)
+                    const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    xLabel.setAttribute('x', x + currentBarWidth / 2);
+                    xLabel.setAttribute('y', chartHeight - padding + 15);
+                    xLabel.setAttribute('text-anchor', 'middle');
+                    xLabel.setAttribute('class', 'chart-label');
+                    xLabel.textContent = i + 1; // Use index as label
+                    dataChart.appendChild(xLabel);
+
+                    // Value label above bar
+                    const valueLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    valueLabel.setAttribute('x', x + currentBarWidth / 2);
+                    valueLabel.setAttribute('y', y - 5);
+                    valueLabel.setAttribute('text-anchor', 'middle');
+                    valueLabel.setAttribute('class', 'chart-label');
+                    valueLabel.textContent = val.toFixed(0); // Show exact value
+                    dataChart.appendChild(valueLabel);
+                });
+
+                // Chart Title
+                const chartTitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                chartTitle.setAttribute('x', chartWidth / 2);
+                chartTitle.setAttribute('y', padding / 2);
+                chartTitle.setAttribute('text-anchor', 'middle');
+                chartTitle.setAttribute('class', 'chart-axis-label');
+                chartTitle.textContent = `Distribution of ${columnHeader}`;
+                dataChart.appendChild(chartTitle);
+
+                // Y-axis label
+                const yAxisTitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                yAxisTitle.setAttribute('x', -chartHeight / 2);
+                yAxisTitle.setAttribute('y', padding / 2);
+                yAxisTitle.setAttribute('transform', 'rotate(-90)');
+                yAxisTitle.setAttribute('text-anchor', 'middle');
+                yAxisTitle.setAttribute('class', 'chart-axis-label');
+                yAxisTitle.textContent = columnHeader;
+                dataChart.appendChild(yAxisTitle);
+
+                // X-axis label
+                const xAxisTitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                xAxisTitle.setAttribute('x', chartWidth / 2);
+                xAxisTitle.setAttribute('y', chartHeight - padding / 2 + 10);
+                xAxisTitle.setAttribute('text-anchor', 'middle');
+                xAxisTitle.setAttribute('class', 'chart-axis-label');
+                xAxisTitle.textContent = "Data Points"; // Or specific identifier if available
+                dataChart.appendChild(xAxisTitle);
+            }
+
+            // Event listener for processing data
+            processBtn.addEventListener('click', async () => {
+                hideError();
+                let csvText = csvInput.value.trim();
+
+                if (csvFile.files.length > 0) {
+                    const file = csvFile.files[0];
+                    try {
+                        csvText = await file.text();
+                    } catch (e) {
+                        showError("Failed to read file: " + e.message);
+                        return;
+                    }
+                }
+
+                if (!csvText) {
+                    showError("Please paste CSV data or upload a file.");
+                    return;
+                }
+
+                try {
+                    parsedData = parseCSV(csvText);
+                    if (parsedData.rows.length === 0) {
+                        showError("Parsed CSV contains no data rows. Please check format.");
+                        return;
+                    }
+                    renderStatistics(parsedData.headers, parsedData.rows);
+                    if (numericColumns.length > 0) {
+                        renderChart(parsedData.rows, chartColumnSelect.value);
+                    } else {
+                        dataChart.innerHTML = '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#777">No numeric data available for chart.</text>';
+                    }
+                    resultsSection.style.display = 'block';
+                } catch (e) {
+                    showError("Error parsing CSV: " + e.message);
+                }
+            });
+
+            // Event listener for chart column selection
+            chartColumnSelect.addEventListener('change', () => {
+                if (parsedData.rows.length > 0) {
+                    renderChart(parsedData.rows, chartColumnSelect.value);
+                }
+            });
+
+            // Event listener for downloading CSV
+            downloadCsvBtn.addEventListener('click', () => {
+                if (parsedData.rows.length === 0) {
+                    showError("No data to download. Please process a CSV first.");
+                    return;
+                }
+
+                const headers = parsedData.headers;
+                const rows = parsedData.rows;
+
+                let csvContent = headers.join(',') + '\n';
+                rows.forEach(row => {
+                    const rowValues = headers.map(header => {
+                        let value = row[header];
+                        // Basic CSV escaping for values that might contain commas or quotes
+                        if (typeof value === 'string' && (value.includes(',') || value.includes('"') || value.includes('\n'))) {
+                            return `"${value.replace(/"/g, '""')}"`;
+                        }
+                        return value;
+                    });
+                    csvContent += rowValues.join(',') + '\n';
+                });
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                if (link.download !== undefined) { // Feature detection for download attribute
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', 'analyzed_data.csv');
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    showError("Your browser does not support downloading files directly. Please copy the data manually.");
+                }
+            });
+
+            // Optionally, clear file input if textarea is used, and vice versa.
+            csvInput.addEventListener('input', () => {
+                if (csvInput.value.trim() !== '') {
+                    csvFile.value = ''; // Clear file selection if typing in textarea
+                }
+                hideError();
+            });
+
+            csvFile.addEventListener('change', () => {
+                if (csvFile.files.length > 0) {
+                    csvInput.value = ''; // Clear textarea if a file is selected
+                }
+                hideError();
+            });
+        });
+    </script>
+</body>
+</html>
